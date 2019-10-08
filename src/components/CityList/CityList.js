@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 class CityList extends React.Component {
     renderCities() {
-        return this.props.city.slice(0, 10).sort(function(a, b) {
+        return this.props.city.sort(function(a, b) {
                 return a.id - b.id;
             })
             .map(city => {
