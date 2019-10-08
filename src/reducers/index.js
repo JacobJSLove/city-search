@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-
+import mesurmentsReducer from './mesurmentsReducer';
+import citiesReducer from './citiesReducer';
 
 export default combineReducers({
-    test: (state = [], action) => {
-        return 0;
-    }
+    mesurments: mesurmentsReducer,
+    city: citiesReducer
 });
