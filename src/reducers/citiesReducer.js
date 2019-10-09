@@ -1,7 +1,7 @@
 import {
     GET_CITY,
     RESET
-} from '../actions/types';
+} from 'actions/types';
 
 
 export default (state = [], action) => {

@@ -1,6 +1,6 @@
 import {
     GET_MESURMENTS
-} from '../actions/types';
+} from 'actions/types';
 
 
 export default (state = [], action) => {

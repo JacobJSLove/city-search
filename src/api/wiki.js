@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export default axios.create({
-    baseURL: 'https://pl.wikipedia.org/w/'
+    baseURL: 'https://en.wikipedia.org/w/'
 });

@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import LoadingContext from 'context/LoadingContext';
 
 class CityList extends React.Component {
+    static contextType = LoadingContext;
     renderCities() {
         return this.props.city.sort(function(a, b) {
                 return a.id - b.id;
@@ -16,10 +17,19 @@ class CityList extends React.Component {
                 )
             })
     }
+
     render() {
-        return (
-            <ul className="list-group">{this.renderCities()}</ul>
-        );
+        if (this.props.city.length === 10 && this.context.loading) {
+            return <ul className="list-group">{this.renderCities()}</ul>
+        };
+        return < > {
+            this.context.loading ? (
+                <div className="spinner-border text-primary" role="status">
+  <span className="sr-only">Loading...</span>
+</div>) : (<div className="alert alert-warning" role="alert">
+  <strong>Holy guacamole!</strong> Air pollution is too high across Europe
+</div>)
+        } < />
     }
 }
 

@@ -1,5 +1,5 @@
-import openAq from '../api/openAq';
-import wiki from '../api/wiki';
+import openAq from 'api/openAq';
+import wiki from 'api/wiki';
 import _ from 'lodash';
 import {
     GET_MESURMENTS,
@@ -7,14 +7,14 @@ import {
     RESET
 } from './types';
 
-export const getCitiesAndDescriptions = () => async (dispatch, getState) => {
+export const getCitiesAndDescriptions = country => async (dispatch, getState) => {
     // Clear store
     dispatch({
         type: RESET,
         payload: ''
     });
     // Call getMesurments
-    await dispatch(getMesurments());
+    await dispatch(getMesurments(country));
     _.chain(getState().mesurments)
         .map('city') // map city
         .uniq() // only uniqe city's
@@ -28,8 +28,8 @@ export const getCitiesAndDescriptions = () => async (dispatch, getState) => {
         .value(); // Start chain
 };
 
-export const getMesurments = () => async dispatch => {
-    const response = await openAq.get('measurements?country=PL&order_by=value&sort=desc&parameter=pm25');
+export const getMesurments = country => async dispatch => {
+    const response = await openAq.get(`measurements?country=${country}&limit=1000&order_by=value&sort=desc&parameter=pm25`);
     dispatch({
         type: GET_MESURMENTS,
         payload: response.data.results

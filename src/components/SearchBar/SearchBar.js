@@ -1,7 +1,8 @@
 import React from 'react';
 import Downshift from 'downshift';
 import { connect } from 'react-redux';
-import { getCitiesAndDescriptions } from '../../actions';
+import { getCitiesAndDescriptions } from 'actions';
+import LoadingContext from 'context/LoadingContext';
 
 //self
 import './SearchBar.scss';
@@ -12,23 +13,36 @@ const items = [{
     },
     {
         value: 'Germany',
-        tag: 'GR'
+        tag: 'DE'
+    },
+    {
+        value: 'Spain',
+        tag: 'ES'
+    },
+    {
+        value: 'France',
+        tag: 'FR'
     }
 ];
 
 
 class SearchBar extends React.Component {
+    static contextType = LoadingContext;
     state = {
         term: '',
-        prevTerm: ''
+        prevTerm: '',
     };
     onFormSubmit = event => {
         event.preventDefault();
         let { term, prevTerm } = this.state;
-
-        if (term !== '' && prevTerm !== term) {
-            this.setState({ prevTerm: term })
-            this.props.getCitiesAndDescriptions(term);
+        let item = items.find(item => item.value.toLowerCase() === term.toLowerCase());
+        if (item) {
+            if (prevTerm.toLowerCase() !== term.toLowerCase()) {
+                this.context.onLoadChange(true);
+                this.setState({ prevTerm: term });
+                localStorage.setItem("search", term);
+                this.props.getCitiesAndDescriptions(item.tag);
+            };
         };
     };
 
@@ -40,6 +54,7 @@ onStateChange = {
         this.setState({ term: data.inputValue })
     }
 }
+initialInputValue={localStorage.getItem("search") ? localStorage.getItem("search") : ''}
 itemToString={item => (item ? item.value : '')}
 >
 {({
@@ -53,14 +68,13 @@ itemToString={item => (item ? item.value : '')}
   <div>
     <form className="input-group mb-3" onSubmit={this.onFormSubmit}>
     <input type="text"
-        value={this.state.term}
         className="form-control" 
-        placeholder="Szukane państwo"
-        aria-label="Szukane państwo"
+        placeholder="Type country"
+        aria-label="Type country"
         {...getInputProps()} 
        />
         <div className="input-group-append">
-            <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Sprawdź</button>
+            <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Check</button>
         </div>
     </form>
     <ul className="list-group" {...getMenuProps()}>
@@ -73,10 +87,7 @@ itemToString={item => (item ? item.value : '')}
                   key: item.value,
                   index,
                   item,
-                  className: {
-                    backgroundColor:
-                      highlightedIndex === index ? 'list-group-item' : 'list-group-item active',
-                  }
+                  className: highlightedIndex === index ? 'list-group-item list-group-item-action active' : 'list-group-item list-group-item-action'
                 })}
               >
                 {item.value}
